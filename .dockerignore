@@ -1,0 +1,9 @@
+.env
+.gitignore
+pgdata
+node_modules
+npm-debug.log
+docker-volumes
+e2e
+test
+dist

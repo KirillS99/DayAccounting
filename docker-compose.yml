@@ -1,29 +1,31 @@
-version: '3.7' 
-services: 
-  db: 
-    image: postgres 
-    container_name: postgres 
-    restart: 'always' 
-    environment: 
+version: '3.7'
+services:
+  db:
+    image: postgres
+    container_name: postgres
+    restart: 'always'
+    environment:
       POSTGRES_PASSWORD: 300399
       POSTGRES_USER: kirills99
       POSTGRES_DB: day-accounting
-    volumes: 
-      - '~/pgdata:/var/lib/postgresql/data' 
-    ports: 
-      - '5432:5432' 
-  backend: 
-    image: day-accounting-image
-    container_name: backend 
-    restart: 'always' 
-    depends_on: 
-      - db 
-    environment: 
-      DB_NAME: day-accounting
-      DB_USER:  kirills99
-      DB_PASS:  300399
-      DB_HOST: postgres 
-      DB_PORT: 5432 
-      PORT: 3000 
-    ports: 
-      - '3000:3000'
+    volumes:
+      - '~/pgdata:/var/lib/postgresql/data'
+    ports:
+      - '5432:5432'
+  # backend:
+  #   image: day-accounting-image
+  #   container_name: backend
+  #   restart: 'always'
+  #   depends_on:
+  #     - db
+  #   environment:
+  #     DB_NAME: day-accounting
+  #     DB_USER: kirills99
+  #     DB_PASS: 300399
+  #     DB_HOST: postgres
+  #     DB_PORT: 5432
+  #     PORT: 3000
+  #     GOOGLE_CLIENT_ID: 370227120086-o2stj25fa4cpam7bo6m155f2gvvav9cg.apps.googleusercontent.com
+  #     GOOGLE_SECRET: d5Y54araNYkCK91a4wEOAapZ
+  # ports:
+  #   - '3000:3000'

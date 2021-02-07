@@ -5,9 +5,12 @@ import { AppService } from './app.service';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ReportsModule } from './reports/reports.module';
 import { ReportEntity } from './reports/report.entity';
+import { GoogleModule } from './google/google.module';
+import { UserModule } from './user/user.module';
+import { UserEntity } from './user/user.entity';
 
 const typeormConfig: TypeOrmModuleOptions = {
-  entities: [ReportEntity],
+  entities: [ReportEntity, UserEntity],
   type: 'postgres',
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
@@ -18,7 +21,12 @@ const typeormConfig: TypeOrmModuleOptions = {
 };
 
 @Module({
-  imports: [TypeOrmModule.forRoot(typeormConfig), ReportsModule],
+  imports: [
+    TypeOrmModule.forRoot(typeormConfig),
+    ReportsModule,
+    GoogleModule,
+    UserModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

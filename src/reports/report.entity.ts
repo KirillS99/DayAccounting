@@ -6,5 +6,11 @@ export class ReportEntity {
   id: number;
 
   @Column({ type: 'date' })
-  date: Date;
+  createdAt: Date;
+
+  @Column()
+  text: string;
+
+  @Column()
+  totalTime: number;
 }

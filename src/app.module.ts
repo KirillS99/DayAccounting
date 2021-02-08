@@ -8,6 +8,7 @@ import { ReportEntity } from './reports/report.entity';
 import { GoogleModule } from './google/google.module';
 import { UserModule } from './user/user.module';
 import { UserEntity } from './user/user.entity';
+import { AuthModule } from './auth/auth.module';
 
 const typeormConfig: TypeOrmModuleOptions = {
   entities: [ReportEntity, UserEntity],
@@ -26,6 +27,7 @@ const typeormConfig: TypeOrmModuleOptions = {
     ReportsModule,
     GoogleModule,
     UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

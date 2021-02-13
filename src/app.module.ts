@@ -13,11 +13,10 @@ import { AuthModule } from './auth/auth.module';
 const typeormConfig: TypeOrmModuleOptions = {
   entities: [ReportEntity, UserEntity],
   type: 'postgres',
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  username: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  port: Number(process.env.DB_PORT),
+  url: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
   synchronize: true,
 };
 

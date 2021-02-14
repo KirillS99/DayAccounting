@@ -10,15 +10,25 @@ import { UserModule } from './user/user.module';
 import { UserEntity } from './user/user.entity';
 import { AuthModule } from './auth/auth.module';
 
-const typeormConfig: TypeOrmModuleOptions = {
-  entities: [ReportEntity, UserEntity],
-  type: 'postgres',
-  url: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-  synchronize: true,
-};
+const typeormConfig: TypeOrmModuleOptions = new Boolean(process.env.DEV)
+  ? {
+      entities: [ReportEntity, UserEntity],
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      database: process.env.DB_NAME,
+      username: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      port: Number(process.env.DB_PORT),
+      synchronize: true,
+    }
+  : {
+      entities: [ReportEntity, UserEntity],
+      type: 'postgres',
+      url: process.env.DATABASE_URL,
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    };
 
 @Module({
   imports: [

@@ -30,10 +30,4 @@ export class GoogleController {
 
     throw new UnauthorizedException();
   }
-
-  // @UseGuards(AuthGuard('google'))
-  // async getUser(@Req() req) {
-  //   const { user } = this.googleService.googleLogin(req);
-  //   return user;
-  // }
 }

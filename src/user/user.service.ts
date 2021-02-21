@@ -38,4 +38,12 @@ export class UserService {
 
     return Boolean(user);
   }
+
+  public async getUserData(email: string) {
+    const user = await this.userRepository.findOne({
+      where: { email: email },
+    });
+
+    return user;
+  }
 }

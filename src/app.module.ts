@@ -10,7 +10,7 @@ import { UserModule } from './user/user.module';
 import { UserEntity } from './user/user.entity';
 import { AuthModule } from './auth/auth.module';
 
-const typeormConfig: TypeOrmModuleOptions = new Boolean(process.env.DEV)
+const typeormConfig: TypeOrmModuleOptions = Boolean(process.env.DEV)
   ? {
       entities: [ReportEntity, UserEntity],
       type: 'postgres',

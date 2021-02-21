@@ -25,7 +25,8 @@ export class GoogleController {
     const { user } = this.googleService.googleLogin(req);
     if (user) {
       await this.googleService.checkUser(user);
-      return res.redirect(`/login/${user.accessToken}`);
+      const baseUrl = req.headers.AuthRedirect;
+      return res.redirect(`${baseUrl || ''}/login/${user.accessToken}`);
     }
 
     throw new UnauthorizedException();

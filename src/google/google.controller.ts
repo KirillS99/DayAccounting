@@ -33,7 +33,7 @@ export class GoogleController {
       // );
       return res.redirect(
         303,
-        `${JSON.stringify(req.headers.referer)}login/${user.accessToken}`,
+        `${JSON.stringify(req.headers)}login/${user.accessToken}`,
       );
     }
 

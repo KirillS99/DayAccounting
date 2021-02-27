@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { GoogleService } from './google.service';
 import { AuthGuard } from '@nestjs/passport';
+import * as express from 'express';
 
 @Controller('google')
 export class GoogleController {
@@ -15,18 +16,20 @@ export class GoogleController {
 
   @Get()
   @UseGuards(AuthGuard('google'))
-  async googleAuth(@Req() req) {
+  async googleAuth() {
     return;
   }
 
   @Get('redirect')
   @UseGuards(AuthGuard('google'))
-  async googleAuthRedirect(@Req() req, @Res() res) {
+  async googleAuthRedirect(@Req() req, @Res() res: express.Response) {
     const { user } = this.googleService.googleLogin(req);
     if (user) {
       await this.googleService.checkUser(user);
-      const baseUrl = req.headers.AuthRedirect;
-      return res.redirect(`${baseUrl || ''}/login/${user.accessToken}`);
+      return res.redirect(
+        303,
+        `${req.headers.referer}login/${user.accessToken}`,
+      );
     }
 
     throw new UnauthorizedException();

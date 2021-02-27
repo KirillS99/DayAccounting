@@ -26,9 +26,14 @@ export class GoogleController {
     const { user } = this.googleService.googleLogin(req);
     if (user) {
       await this.googleService.checkUser(user);
+      console.log(req.headers);
+      // return res.redirect(
+      //   303,
+      //   `${req.headers.referer}login/${user.accessToken}`,
+      // );
       return res.redirect(
         303,
-        `${req.headers.referer}login/${user.accessToken}`,
+        `${JSON.stringify(req.headers.referer)}login/${user.accessToken}`,
       );
     }
 

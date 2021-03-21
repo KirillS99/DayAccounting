@@ -42,9 +42,10 @@ export class ReportsService {
     const report = new ReportEntity();
     report.created_at = new Date();
     report.text = text;
+    report.id = Number(id);
     report.total_time = totalTime;
 
-    return await this.reportsRepository.save({ id: Number(id), ...report });
+    return await this.reportsRepository.save(report);
   }
 
   public async getReportsByTimeStamp({

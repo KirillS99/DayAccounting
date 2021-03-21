@@ -28,6 +28,7 @@
     "@nestjs/typeorm": "^7.1.5",
     "class-validator": "^0.13.1",
     "cookie-parser": "^1.4.5",
+    "dayjs": "^1.10.4",
     "dotenv": "^8.2.0",
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",

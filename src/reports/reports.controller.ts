@@ -1,15 +1,40 @@
-import { Body, Controller, Param, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ReportsService } from './reports.service';
-import { Request } from 'express';
+import { query, Request } from 'express';
 import { CreateReportDto } from './dto/create-report.dto';
+import { queue } from 'rxjs';
+import { DateStampDto } from './dto/date-stamp.dto';
+import GoogleAuthGuard from 'src/google/google.guard';
 @Controller('reports')
 export class ReportsController {
   constructor(private reportService: ReportsService) {}
 
+  @UseGuards(GoogleAuthGuard)
   @Post('create')
-  async createReport(@Body() createReportDto: CreateReportDto) {
-    const report = await this.reportService.createReport(createReportDto);
+  async createReport(@Body() createReportDto: CreateReportDto, @Req() req) {
+    const report = await this.reportService.createReport({
+      reportData: createReportDto,
+      userData: req.userData,
+    });
     return { report };
+  }
+
+  @Get('get-reports')
+  async getReportsByTimestamp(@Query() query: DateStampDto) {
+    const reports = await this.reportService.getReportsByTimeStamp({
+      timestampEnd: query.timestampEnd,
+      timestampStart: query.timestampStart,
+    });
+    return { reports };
   }
 
   @Post('update/:id')

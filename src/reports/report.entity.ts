@@ -4,7 +4,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -15,6 +14,9 @@ export class ReportEntity {
 
   @Column({ type: 'timestamp' })
   created_at: Date;
+
+  // @Column({ type: 'timestamp' })
+  // updated_at: Date;
 
   @ManyToOne(() => UserEntity, (entity) => entity.id)
   @JoinColumn({ name: 'user_id' })

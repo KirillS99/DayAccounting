@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateReportDto {
   @IsNotEmpty()
@@ -9,6 +9,10 @@ export class CreateReportDto {
   id?: string;
 
   @IsNotEmpty()
-  @IsString()
+  @IsNumber()
   totalTime: number;
+
+  @IsNotEmpty()
+  @IsString()
+  createdAt: Date;
 }

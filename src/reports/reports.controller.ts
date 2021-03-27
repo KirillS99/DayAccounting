@@ -12,7 +12,7 @@ import { ReportsService } from './reports.service';
 import { query, Request } from 'express';
 import { CreateReportDto } from './dto/create-report.dto';
 import { queue } from 'rxjs';
-import { DateStampDto } from './dto/date-stamp.dto';
+import { DateDto } from './dto/date.dto';
 import GoogleAuthGuard from 'src/google/google.guard';
 @Controller('reports')
 export class ReportsController {
@@ -29,10 +29,9 @@ export class ReportsController {
   }
 
   @Get('get-reports')
-  async getReportsByTimestamp(@Query() query: DateStampDto) {
+  async getReportsByTimestamp(@Query() query: DateDto) {
     const reports = await this.reportService.getReportsByTimeStamp({
-      timestampEnd: query.timestampEnd,
-      timestampStart: query.timestampStart,
+      date: query.date,
     });
     return { reports };
   }

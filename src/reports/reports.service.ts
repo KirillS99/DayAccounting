@@ -28,9 +28,9 @@ export class ReportsService {
 
     report.created_at = reportData.createdAt;
     report.user = parsedUserData;
+    report.updated_at = new Date();
     report.text = text;
     report.total_time = totalTime;
-    console.log(report);
     return await this.reportsRepository.save(report);
   }
 
@@ -42,7 +42,7 @@ export class ReportsService {
   }: CreateReportDto): Promise<ReportEntity> {
     const report = new ReportEntity();
     report.created_at = createdAt;
-    // report.updated_at = new Date();
+    report.updated_at = new Date();
     report.text = text;
     report.id = Number(id);
     report.total_time = totalTime;

@@ -36,14 +36,27 @@ export class ReportsController {
     return { reports };
   }
 
+  @UseGuards(GoogleAuthGuard)
+  @Post('delete/:id')
+  async deleteReport(@Param('id') id: string, @Req() req) {
+    const report = await this.reportService.deleteReport({
+      id,
+      userData: req.userData,
+    });
+    return { report };
+  }
+
+  @UseGuards(GoogleAuthGuard)
   @Post('update/:id')
   async updateReport(
     @Param('id') id: string,
     @Body() createReportDto: CreateReportDto,
+    @Req() req,
   ) {
     const report = await this.reportService.updateReport({
       id,
-      ...createReportDto,
+      reportData: createReportDto,
+      userData: req.userData,
     });
     return { report };
   }

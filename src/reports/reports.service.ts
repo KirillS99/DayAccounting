@@ -1,8 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as dayjs from 'dayjs';
 import { UserEntity } from 'src/user/user.entity';
-import { LessThanOrEqual, MoreThanOrEqual, Raw, Repository } from 'typeorm';
+import {
+  DeleteResult,
+  LessThanOrEqual,
+  MoreThanOrEqual,
+  Raw,
+  Repository,
+} from 'typeorm';
 import { CreateReportDto } from './dto/create-report.dto';
 import { DateDto } from './dto/date.dto';
 import { ReportEntity } from './report.entity';
@@ -11,6 +22,16 @@ interface ICreateReport {
   reportData: CreateReportDto;
   userData: string;
 }
+interface IDeleteReport {
+  id: string;
+  userData: string;
+}
+interface IUpdateReport {
+  id: string;
+  reportData: CreateReportDto;
+  userData: string;
+}
+
 @Injectable()
 export class ReportsService {
   constructor(
@@ -22,9 +43,21 @@ export class ReportsService {
     reportData,
     userData,
   }: ICreateReport): Promise<ReportEntity> {
-    const { text, totalTime } = reportData;
+    const { text, totalTime, createdAt } = reportData;
     const report = new ReportEntity();
     const parsedUserData = JSON.parse(userData);
+
+    const usersReportsByDay = await this.getReportsByTimeStamp({
+      date: createdAt.toString(),
+    });
+
+    const userReportByDay = usersReportsByDay.filter(
+      (t) => t.user.id === parsedUserData.id,
+    );
+
+    if (userReportByDay.length) {
+      throw new BadRequestException('You have a report today');
+    }
 
     report.created_at = reportData.createdAt;
     report.user = parsedUserData;
@@ -36,11 +69,28 @@ export class ReportsService {
 
   public async updateReport({
     id,
-    text,
-    totalTime,
-    createdAt,
-  }: CreateReportDto): Promise<ReportEntity> {
+    reportData,
+    userData,
+  }: IUpdateReport): Promise<ReportEntity> {
+    const { createdAt, text, totalTime } = reportData;
     const report = new ReportEntity();
+    const parsedUserData = JSON.parse(userData);
+
+    const userReport = await this.reportsRepository.findOne({
+      where: { id: id },
+      relations: ['user'],
+    });
+
+    if (!userReport) {
+      throw new NotFoundException();
+    }
+
+    if (userReport.user.id !== parsedUserData.id) {
+      throw new BadRequestException(
+        "You don't have permissions to update other user's reports",
+      );
+    }
+
     report.created_at = createdAt;
     report.updated_at = new Date();
     report.text = text;
@@ -48,6 +98,31 @@ export class ReportsService {
     report.total_time = totalTime;
 
     return await this.reportsRepository.save(report);
+  }
+
+  public async deleteReport({ id, userData }: IDeleteReport): Promise<string> {
+    const parsedUserData = JSON.parse(userData);
+
+    const userReport = await this.reportsRepository.findOne({
+      where: { id: id },
+      relations: ['user'],
+    });
+
+    if (!userReport) {
+      throw new NotFoundException();
+    }
+
+    if (userReport.user.id !== parsedUserData.id) {
+      throw new BadRequestException(
+        "You don't have permissions to delete other user's reports",
+      );
+    }
+    try {
+      await this.reportsRepository.delete(id);
+      return 'success';
+    } catch (e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 
   public async getReportsByTimeStamp({
@@ -65,7 +140,6 @@ export class ReportsService {
       after: convertedDateStart,
     };
 
-    console.log(filters);
     const allReposts = await this.reportsRepository
       .createQueryBuilder('report')
       .select()
